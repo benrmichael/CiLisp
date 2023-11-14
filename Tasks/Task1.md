@@ -1049,7 +1049,7 @@ Process finished with exit code 0
 
 ## <a name="cleaning_up"></a> CLEANING UP
 
-The final task is cleaning up the syntax tree when we're done with it. Like evaluation, this should be done recursively.
+The final task is to clean up the syntax tree when we're done with it. Like evaluation, this should be done recursively.
 
 The **freeNode** function is declared in [cilisp.h](../src_files/cilisp.h), defined (incompletely) in [cilisp.c](../src_files/cilisp.c), and called in [cilisp.y](../src_files/cilisp.y) after evaluation of an input is complete. **freeNode** will need to be completed for this task (though it should be relatively small). As you progress through the project, it will grow into a recursive system of functions to free the whole abstract syntax tree.
 
