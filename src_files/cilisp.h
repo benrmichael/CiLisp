@@ -7,6 +7,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
+// code
 
 
 #define NAN_RET_VAL (RET_VAL){DOUBLE_TYPE, NAN}
