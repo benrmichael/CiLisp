@@ -54,7 +54,7 @@ The non-terminals **s_expr** and **f_expr** are shorthand:
 
 ## DATA STRUCTURES
 
-Next we'll discuss the structures provided in [cilisp.h](../src/cilisp.h). For a more intuitive understanding of the structures and their names defined here, note that **AST** is short for *__A__bstract __S__yntax __T__ree*. As such, the structures discussed below are intended to house data in an abstract syntax tree.
+Next we'll discuss the structures provided in [cilisp.h](../src_files/cilisp.h). For a more intuitive understanding of the structures and their names defined here, note that **AST** is short for *__A__bstract __S__yntax __T__ree*. As such, the structures discussed below are intended to house data in an abstract syntax tree.
 
 ### NUMBERS
 
@@ -94,7 +94,7 @@ The last line, which gives the **AST\_NUMBER** struct a second name (**RET\_VAL*
 
 The terms "operator" and "function" will be used interchangeably for our discussion here.
 
-We'll start our discussion of functions with the enum and struct definitions in [cilisp.h](../src/cilisp.h).
+We'll start our discussion of functions with the enum and struct definitions in [cilisp.h](../src_files/cilisp.h).
 
 ```c
 typedef enum func_type {
@@ -120,9 +120,9 @@ typedef struct {
 This struct stores the operator used in the function call (a member of the **FUNC\_TYPE** enum) and the operands for the function (a linked list of **struct ast\_node**s, which we will discuss in the [GENERIC NODES](#generics) section below).
 
 Take note of the **resolveFunc** function
-[cilisp.c](../src/cilisp.c). This function takes as input a function's name (in string form), and outputs the corresponding **FUNC\_TYPE** member. It will be used to assign value to **FUNC** tokens while lexing.
+[cilisp.c](../src_files/cilisp.c). This function takes as input a function's name (in string form), and outputs the corresponding **FUNC\_TYPE** member. It will be used to assign value to **FUNC** tokens while lexing.
 
-**resolveFunc** works because the array of function names (**funcNames**, in [cilisp.c](../src/cilisp.c)) lists all functions in the same order as the **FUNC\_TYPE** enum. If either of these is edited, the other must also be edited to match. If they are not kept in sync, **resolveFunc** will not work. **CUSTOM\_FUNC** should be left as the last element of **resolveFunc** for the same reason; user-defined functions will be implemented at the end of the project, and we'll know a function is user-defined if we make it through the whole **funcNames** array without finding the name of the function.
+**resolveFunc** works because the array of function names (**funcNames**, in [cilisp.c](../src_files/cilisp.c)) lists all functions in the same order as the **FUNC\_TYPE** enum. If either of these is edited, the other must also be edited to match. If they are not kept in sync, **resolveFunc** will not work. **CUSTOM\_FUNC** should be left as the last element of **resolveFunc** for the same reason; user-defined functions will be implemented at the end of the project, and we'll know a function is user-defined if we make it through the whole **funcNames** array without finding the name of the function.
 
 ### <a name="generics"></a> GENERIC NODES
 
@@ -150,7 +150,7 @@ An **AST\_NODE** stores a member of the **AST\_NODE\_TYPE** enum in it's **type*
 
 ## LEXING
 
-First, it is necessary to define all tokens and all non-terminals within the grammar. **token**s (and non-terminals, called **type**s by yacc), will be defined in [cilisp.y](../src/cilisp.y) in the definitions section. The provided token and type definitions are:
+First, it is necessary to define all tokens and all non-terminals within the grammar. **token**s (and non-terminals, called **type**s by yacc), will be defined in [cilisp.y](../src_files/cilisp.y) in the definitions section. The provided token and type definitions are:
 
 ```bison
 %union {
@@ -172,15 +172,15 @@ The union contains all types that **token**s and **type**s will have. In this ca
 
 The tokens defined by the yacc file must be lexed. As we know, the lex file is used to configure a lexer.
 
-The provided [cilisp.l](../src/cilisp.l) is barely started. It has rules to tokenize and return some tokens, but not all of them. You must complete it.
+The provided [cilisp.l](../src_files/cilisp.l) is barely started. It has rules to tokenize and return some tokens, but not all of them. You must complete it.
 
-Pay attention to the **llog** calls made for debugging purposes each time a token is created. Just like in the lab, these calls print to a log file `src/bison-flex-outputs/flex_bison_log`. Every rule in [cilisp.l](../src/cilisp.l) should include an **llog** call.
+Pay attention to the **llog** calls made for debugging purposes each time a token is created. Just like in the lab, these calls print to a log file `src/bison-flex-outputs/flex_bison_log`. Every rule in [cilisp.l](../src_files/cilisp.l) should include an **llog** call.
 
 ## PARSING
 
-The goal of the parser is to construct an abstract syntax tree after tokenization. Most of the productions in your grammar will have an equivalent production in [cilisp.y](../src/cilisp.y), which is the configuration file for the parser.
+The goal of the parser is to construct an abstract syntax tree after tokenization. Most of the productions in your grammar will have an equivalent production in [cilisp.y](../src_files/cilisp.y), which is the configuration file for the parser.
 
-The first set of productions in [cilisp.y](../src/cilisp.y) are for parsing programs, which serve as an entry point. The productions are provided, and should be changed cautiously if at all. Productions for `s_expr ::= error` and `s_expr ::= QUIT` are also provided.
+The first set of productions in [cilisp.y](../src_files/cilisp.y) are for parsing programs, which serve as an entry point. The productions are provided, and should be changed cautiously if at all. Productions for `s_expr ::= error` and `s_expr ::= QUIT` are also provided.
 
 ```bison
 program:
@@ -232,7 +232,7 @@ The figure below (which can be found [here](../figures/task_1/task_1.png)) may h
 
 You are **strongly** encouraged to illustrate prouductions like this as you go through the project, and to occasionally draw out entire syntax trees for test inputs.
 
-Many of these productions will need to call the functions declared at the bottom of [cilisp.h](../src/cilisp.h):
+Many of these productions will need to call the functions declared at the bottom of [cilisp.h](../src_files/cilisp.h):
 
 ```c
 AST_NODE *createNumberNode(double value, NUM_TYPE type);
@@ -240,17 +240,17 @@ AST_NODE *createFunctionNode(FUNC_TYPE func, AST_NODE *opList);
 AST_NODE *addExpressionToList(AST_NODE *newExpr, AST_NODE *exprList);
 ```
 
-These functions are defined in [cilisp.c](../src/cilisp.c); some of their definitions are partially completed already.
+These functions are defined in [cilisp.c](../src_files/cilisp.c); some of their definitions are partially completed already.
 
-Whenever a function or value needs to be accessible by the lexer or parser, it must be declared in [cilisp.h](../src/cilisp.h).
+Whenever a function or value needs to be accessible by the lexer or parser, it must be declared in [cilisp.h](../src_files/cilisp.h).
 
-For instance, in the `number ::= INT` production, you will likely want to assign `$$` (the value of the **number**) to the result of a call to **createNumberNode**, which should create an **AST\_NODE** housing an **AST\_NUMBER** whose data is populated with that from the **INT** token (i.e. its double value) and the type (**INT\_TYPE**, from the **NUMBER\_TYPE** enum). Both **createNumberNode** and **INT\_TYPE** are accessible to the parser because they are declared in [cilisp.h](../src/cilisp.h).
+For instance, in the `number ::= INT` production, you will likely want to assign `$$` (the value of the **number**) to the result of a call to **createNumberNode**, which should create an **AST\_NODE** housing an **AST\_NUMBER** whose data is populated with that from the **INT** token (i.e. its double value) and the type (**INT\_TYPE**, from the **NUMBER\_TYPE** enum). Both **createNumberNode** and **INT\_TYPE** are accessible to the parser because they are declared in [cilisp.h](../src_files/cilisp.h).
 
 ## EVALUATION
 
 ### GENERIC EVALUATION
 
-Once parsing is complete (i.e. when a series of tokens is reduced to a sequence `s_expr EOL` or `s_expr EOFT`, the contents of a single program) the **eval** function is called on the root `s_expr`. You can see this call in the provided `program ::= s_expr EOL` production in [cilisp.y](../src/cilisp.y). This function is the entry point for a recursive system of functions whose purpose is to evaluate the syntax tree and output the resulting **RET_VAL**.
+Once parsing is complete (i.e. when a series of tokens is reduced to a sequence `s_expr EOL` or `s_expr EOFT`, the contents of a single program) the **eval** function is called on the root `s_expr`. You can see this call in the provided `program ::= s_expr EOL` production in [cilisp.y](../src_files/cilisp.y). This function is the entry point for a recursive system of functions whose purpose is to evaluate the syntax tree and output the resulting **RET_VAL**.
 
 While it is generally bad practice to pass structs by value, we will make an exception for the **RET\_VAL** struct, which is sufficiently small for the issue to be irrelevant. Of course, if you wish to pass them around by reference instead, you're welcome to do so.
 
@@ -268,11 +268,11 @@ This process is similar to the evaluation prodedure carried out in the parser la
 
 That is, **evalFuncNode** should be a glorified switch or if/else cascade, which just calls the individual function evaluation procedures. I **strongly** advise against doing said procedures inside of **evalFuncNode** instead of making these helper functions; it's totally doable, but it's also more tedious to read, debug, and expand.
 
-Much of the work in function evaluation is catching and dealing with fringe cases. Often, you will need to print warnings as described in the function desciptions and sample runs below. Use the **warning** function, provided in [cilisp.c](../src/cilisp.c) for this purpose. It is essentically **printf** with a couple extra features to keep the console output pretty and well spaced. It also prepends "WARNING: " onto whatever formatted string you pass it.
+Much of the work in function evaluation is catching and dealing with fringe cases. Often, you will need to print warnings as described in the function desciptions and sample runs below. Use the **warning** function, provided in [cilisp.c](../src_files/cilisp.c) for this purpose. It is essentically **printf** with a couple extra features to keep the console output pretty and well spaced. It also prepends "WARNING: " onto whatever formatted string you pass it.
 
 ## FUNCTION SPECIFICATIONS
 
-Unary functions take 1 operand, binary take 2 operands, and *n*-ary take any number of operands. Functions which are given too few operands should print warnings and return `NAN_RET_VAL` (defined in [cilisp.h](../src/cilisp.h)) unless otherwise specified below. Functions which are given too many operands should print warnings stating that the extra operands were ignored, and then only use the required number of operands in calculation. If extra operands are provided, the leftmost operands should be used and the extras on the right ignored.
+Unary functions take 1 operand, binary take 2 operands, and *n*-ary take any number of operands. Functions which are given too few operands should print warnings and return `NAN_RET_VAL` (defined in [cilisp.h](../src_files/cilisp.h)) unless otherwise specified below. Functions which are given too many operands should print warnings stating that the extra operands were ignored, and then only use the required number of operands in calculation. If extra operands are provided, the leftmost operands should be used and the extras on the right ignored.
 
 Check out the **math.h** library (open the console and type `man math` to get its documentation) before starting these implementations. Be careful: many of the **math.h** library functions don't behave as the specifications below describe, despite similar nomenclature. For instance, **math.h**'s **remainder** can return a negative value, but the specifications for the **remainder** function below specify that the result must be positive.
 
@@ -1051,6 +1051,6 @@ Process finished with exit code 0
 
 The final task is cleaning up the syntax tree when we're done with it. Like evaluation, this should be done recursively.
 
-The **freeNode** function is declared in [cilisp.h](../src/cilisp.h), defined (incompletely) in [cilisp.c](../src/cilisp.c), and called in [cilisp.y](../src/cilisp.y) after evaluation of an input is complete. **freeNode** will need to be completed for this task (though it should be relatively small). As you progress through the project, it will grow into a recursive system of functions to free the whole abstract syntax tree.
+The **freeNode** function is declared in [cilisp.h](../src_files/cilisp.h), defined (incompletely) in [cilisp.c](../src_files/cilisp.c), and called in [cilisp.y](../src_files/cilisp.y) after evaluation of an input is complete. **freeNode** will need to be completed for this task (though it should be relatively small). As you progress through the project, it will grow into a recursive system of functions to free the whole abstract syntax tree.
 
 When we are grading, we will be running with Valgrind Memcheck to look for memory leaks.
