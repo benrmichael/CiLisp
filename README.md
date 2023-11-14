@@ -45,25 +45,18 @@ During finals week on December 7th, you need to have submitted all work before 1
 Files for this project are found on comp232.com in the /home/LAB11 directory. To download these files from comp232.com onto your system, run the following commands:
 
 ```bash
-john@oho:~$ pwd  Start in your home directory on your laptop.
+john@oho:~$ pwd 
 /home/john
-john@oho:~$ mkdir LAB11  Create LAB11 directory.
-john@oho:~$ cd LAB11  cd to LAB11.
-john@oho:~/LAB11$ ls  Directory is empty.
-john@oho:~/LAB11$ sftp comp232.com  Run sftp comp232.com.
+john@oho:~$ mkdir LAB11 
+john@oho:~$ cd LAB11 
+john@oho:~/LAB11$ ls 
+john@oho:~/LAB11$ sftp comp232.com 
 Connected to comp232.com.
-sftp> cd /home/LAB11  cd to /home/LAB11
-sftp> mget -r *  Run mget -r * DON’T FORGET THE -r
-... (output omitted for brevity)
+sftp> cd /home/LAB11 
+sftp> mget -r * 
 sftp> quit
-john@oho:~/LAB11$ ls  INPUTS is a directory containing test files.
+john@oho:~/LAB11$ ls
 INPUTS bison_flex.log cilisp.c cilisp.h cilisp.l cilisp.y yyreadprint.c
-john@oho:~/LAB11$ ls -lR  Run a recursive list.
+john@oho:~/LAB11$ ls -lR 
 ... (output omitted for brevity)
 ```
-
-Double : 0.131546
-> ((let (double gcd lambda (x y) (cond (greater y x) (gcd y x) (cond (equal y 0) x
-(gcd y (remainder x y)))))) (gcd 95.5 55))
-Double : 0.500000
-> quit
