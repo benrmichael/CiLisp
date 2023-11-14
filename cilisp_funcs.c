@@ -27,9 +27,6 @@ char *funcNames[] = {
 
 FUNC_TYPE resolveFunc(char *funcName)
 {
-    // Array of string values for function names.
-    // Must be in sync with members of the FUNC_TYPE enum in order for resolveFunc to work.
-    // For example, funcNames[NEG_FUNC] should be "neg"
     int i = 0;
     while (funcNames[i][0] != '\0')
     {
@@ -290,9 +287,9 @@ RET_VAL evalHypotFunc(AST_NUM_LIST *node){
 }
 RET_VAL evalMaxFunc(AST_NUM_LIST *node){
     RET_VAL max;
-    max.value = -53.67;
+    max.value = MIN_INT;
     while(node != NULL){
-        if(max.value == -53.67 || node->number.value > max.value){
+        if(node->number.value > max.value){
             max.value = node->number.value;
             max.type = node->number.type;
         }
@@ -303,9 +300,9 @@ RET_VAL evalMaxFunc(AST_NUM_LIST *node){
 }
 RET_VAL evalMinFunc(AST_NUM_LIST *node){
     RET_VAL min;
-    min.value = -53.67;
+    min.value = MAX_INT;
     while(node != NULL){
-        if(min.value == -53.67 || node->number.value < min.value){
+        if(node->number.value < min.value){
             min.value = node->number.value;
             min.type = node->number.type;
         }
