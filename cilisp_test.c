@@ -176,22 +176,25 @@ int testFile(file_t t) {
     }
 }
 
-int checkForMatch(regex_t *regex, char *reg, char *str, int *ln, int i_flag, file_t test_f){
-	int r = regcomp(regex, reg, REG_EXTENDED | REG_ICASE);
+int checkForMatch(char *reg, char *str, int *ln, int i_flag, file_t test_f){
+    regex_t regex;
+	int r = regcomp(&regex, reg, REG_EXTENDED | REG_ICASE);
 	if(r) {
 		error(0, "Could not compile regex pattern -> %s", reg);
 		return 0;
 	}
 
-	r = regexec(regex, str, 0, NULL, 0);
+	r = regexec(&regex, str, 0, NULL, 0);
 	if(r) {
 		if(print_table_flag) printCase(test_f, str, (*ln), 0);
 		if(i_flag) {
 			(*ln)++;
 		}
+        regfree(&regex);
 		return 0;
 	} else {
 		if(print_table_flag) printCase(test_f, str, (*ln), 1);
+        regfree(&regex);
 		return 1;
 	}
 }
@@ -233,6 +236,8 @@ void printCase(file_t ft, char *given, int n, int passed){
 	if(!pad) printf("| %-15.15s | %-25.25s | %s%-25.25s | %s%-15.15s%s |\n", input, expected, RESET_COLOR, given, colorCode, (passed) ? "Passed" : "Failed", RESET_COLOR);
 	else printf("| %-15.15s | %-25.25s | %s%-25.25s     | %s%-15.15s%s |\n", input, expected, RESET_COLOR, given, colorCode, (passed) ? "Passed" : "Failed", RESET_COLOR);
 	printf("+ %s + %s + %s + %s +\n", "---------------", "-------------------------", "-------------------------", "---------------");
+    free(input);
+    free(string);
 }
 
 void printTableHeader() {
@@ -288,7 +293,6 @@ void setupFileVar(char *fname, char *path, int flag){
 	strcpy(exe, "");
 	if(strstr(fname, "task_4.cilisp") != NULL){
 		snprintf(exe, sizeof(exe), "./cilisp %s%s %s%s", flag ? path : "", fname, sys_path, "task_4_read_target.txt");
-        printf("Running file: %s\n", exe);
 		return;
 	}
 	snprintf(exe, 128, "./cilisp < %s%s", flag ? path : "", fname);
@@ -314,7 +318,6 @@ int test(file_t ft, int n, ...){
 	va_start(args, n);
 
 	int reg, ln = 0, numtests = n, numright = 0;
-	regex_t regex;
 
 	while(fgets(buffer, BUFFER_LEN, fp) != NULL){
 		if(strcmp(buffer, "\n") == 0) continue;
@@ -327,7 +330,11 @@ int test(file_t ft, int n, ...){
 		else reg_pat = va_arg(args, char*);
 
 		int flag = (strcmp(reg_pat, warn_reg) == 0);
-		numright += checkForMatch(&regex, reg_pat, buffer, &ln, flag, ft);
+		numright += checkForMatch(reg_pat, buffer, &ln, flag, ft);
+        if(!(flag || (strcmp(reg_pat, nan_reg) == 0) || (strcmp(reg_pat, inf_reg) == 0) || (strcmp(reg_pat, read_reg) == 0) || (strcmp(reg_pat, rand_reg) == 0) || (strcmp(reg_pat, rand_sum_reg) == 0) || (strcmp(reg_pat, ".*")) == 0)){
+            printf("Freeing : %s\n", reg_pat);
+            free(reg_pat);
+        }
 		++ln;
 	}
 
